@@ -24,10 +24,11 @@ public class UpdateMatrix {
         if(player==0)
         {
             int update = -1;
-            for(int i=dimension-1;i>=0;i--)
+            for(int i=dimension-1;i>0;i--)
             {
-                for(int j=dimension-1;j>=0;j--)
+                for(int j=dimension-1;j>0;j--)
                 {
+                     
                     if(narr[i][j]==1 && narr[i-1][j]==0)
                     {    narr[i][j]=0;
                          narr[i-1][j]=1;
@@ -43,10 +44,11 @@ public class UpdateMatrix {
         {
         
             int update = -1;
-            for(int i=0;i<dimension;i++)
+            for(int i=0;i<dimension-1;i++)
             {
-                for(int j=0;j<dimension;j++)
+                for(int j=0;j<dimension-1;j++)
                 {
+                    
                     if(narr[i][j]==2&& narr[i+1][j]==0)
                     {    narr[i][j]=0;
                          narr[i+1][j]=2;

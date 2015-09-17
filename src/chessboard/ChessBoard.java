@@ -18,6 +18,7 @@ public class ChessBoard extends JFrame {
         setResizable(false);
     }
     public static ChessBoard box ;
+    public static Board frame;
     public static JTextField j;
     private static void createAndShowGUI() {
         //Create and set up the window.
@@ -41,7 +42,7 @@ public class ChessBoard extends JFrame {
         final int FRAME_WIDTH = 300;
         final int FRAME_HEIGHT = 100;
         box.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        box.setTitle("A frame with two components");
+        box.setTitle("CHESSBOARD : Choose size");
         box.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         box.setVisible(true);
         nextButton.addActionListener(new ActionListenerImpl());
@@ -69,7 +70,8 @@ public class ChessBoard extends JFrame {
                         }
                         else
                         {
-                            Board frame = new Board("Chess Board",Integer.parseInt(j.getText()));
+                            frame = new Board("Chess Board",Integer.parseInt(j.getText()));
+                            frame.setTitle("CHESSBOARD");
                             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                             //Set up the content pane.
                             frame.addComponentsToPane(frame.getContentPane());

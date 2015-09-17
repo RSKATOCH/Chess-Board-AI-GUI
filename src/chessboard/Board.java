@@ -21,13 +21,19 @@ public class Board extends JFrame {
     /**
      * @param args the command line arguments
      */
-    int dimension;
+    static Board frame;
+    static int dimension;
     static int history[][][];
     static int turn = 0;
+    int nblack=0 ;
+    int nwhite=0 ;
+    static int nb,nw;
     static int currentturn = 0;
     static int arr[][];
     static int player=0;
+    static int x,y;
     static JPanel grid[][];
+    static JButton but[][];
     final static int maxGap = 20;
     JComboBox horGapComboBox;
     JComboBox verGapComboBox;
@@ -39,6 +45,7 @@ public class Board extends JFrame {
     public Board(String name, int number, int[][] ar) {
         super(name);
         dimension = number;
+        frame=this;
         arr= new int[dimension][dimension];
         //history[turn]=new int[dimension][dimension];
         for(int i=0;i<dimension;i++)
@@ -53,7 +60,10 @@ public class Board extends JFrame {
     }
     public Board(String name, int number) {
         super(name);
+        frame=this;
         dimension = number;
+        nwhite=0;
+        nblack=0;
         arr= new int[dimension][dimension];
         setResizable(false);
         initializePositions();
@@ -72,15 +82,6 @@ public class Board extends JFrame {
         {
             for(int j=0;j<dimension;j++)
             {
-                if(i==0)
-                {
-                    arr[i][j]=2; //Black
-                }
-                else if(i==dimension-1)
-                {
-                    arr[i][j]=1; //White
-                }
-                else
                 {
                     arr[i][j]=0;
                 }    
@@ -88,7 +89,21 @@ public class Board extends JFrame {
         }
         buttons = black.getIconHeight();
         
-    }        
+    }
+    public void setPiece(JButton but, int piecetype){
+            if(piecetype==1)
+            {
+                nwhite++;
+                but.setIcon(white);
+            }
+            else if(piecetype==2)
+            {
+                nblack++;
+                but.setIcon(black);
+            }
+            nw=nwhite;
+            nb=nblack;
+        }
     public static boolean comparearray(int[][] a, int[][] b,int dimension)
     {
         for(int i=0;i<dimension;i++)
@@ -102,6 +117,7 @@ public class Board extends JFrame {
         return true;
         
     }
+    
     public void addComponentsToPane(final Container pane) {
 
         final JPanel compsToExperiment = new JPanel();
@@ -118,13 +134,13 @@ public class Board extends JFrame {
         compsToExperiment.setPreferredSize(new Dimension(dimension*75,dimension*75));
         
         //Add buttons to experiment with Grid Layout
-        JButton but[][] = new JButton[dimension][dimension];
+        but = new JButton[dimension][dimension];
         
         for(int i=0; i<dimension;i++)
         {
             for(int j=0;j<dimension;j++)
             {    
-                if(arr[i][j]==1)
+                /*if(arr[i][j]==1)
                 {    
                     but[i][j]=new JButton();
                     but[i][j].setIcon(white);
@@ -135,9 +151,10 @@ public class Board extends JFrame {
                     but[i][j]=new JButton("b");
                     but[i][j].setIcon(black);
                 }
-                else
+                else*/
                 {
                     but[i][j]=new JButton();
+                    setPiece(but[i][j],arr[i][j]);
                 }    
                 if((i+j)%2==0)
                 {
@@ -152,6 +169,8 @@ public class Board extends JFrame {
                     but[i][j].setOpaque(true);
                 }    
                  compsToExperiment.add(but[i][j]);
+                 
+                but[i][j].addActionListener(new ActionListenerImple(i,j));
             }
         };
         
@@ -177,8 +196,9 @@ public class Board extends JFrame {
                 turn++;
                 currentturn++;
                 player=player==0?1:0;
-                Board frame = new Board("Chess Board",Integer.parseInt(j.getText()),arr1);
+                frame = new Board("Chess Board",Integer.parseInt(j.getText()),arr1);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setTitle("CHESSBOARD");
                 //Set up the content pane.
                 frame.addComponentsToPane(frame.getContentPane());
                 //Display the window.
@@ -194,6 +214,39 @@ public class Board extends JFrame {
     
    }
     
+    private static class ActionListenerImple implements ActionListener {
+        ImageIcon black = new ImageIcon(getClass().getResource("black.png"));
+        ImageIcon white = new ImageIcon(getClass().getResource("white.png"));
+        int x,y;
+        public ActionListenerImple(int p,int q) {
+            x=p;
+            y=q;
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+                    if(arr[x][y]==0 && (nb<8 || nw<8))
+                    {    
+                        //frame.setVisible(false);
+                        SelectPiece p = new SelectPiece("Options",arr,dimension,frame,x,y,nw,nb);
+                        p.setTitle("CHESSBOARD : CHOOSE PAWN");
+                        p.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        //Set up the content pane.
+                        p.addComponentsToPane(p.getContentPane());
+                        //Display the window.
+                        p.pack();
+                        p.setVisible(true);
+                        
+                    }
+                    else if(arr[x][y]!=0)
+                    {
+                        JOptionPane.showMessageDialog(null, "Cell already contains piece", "Chess Board: Error", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "8 pieces are selected for both", "Chess Board: Error", JOptionPane.INFORMATION_MESSAGE);
+                    }    
+        }
+    }
     /**
      * Create the GUI and show it.  For thread safety,
      * this method is invoked from the
